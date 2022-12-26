@@ -13,6 +13,7 @@ import Servant (
     Post,
     Header,
     Capture,
+    QueryParam,
     Get,
     JSON,
     ReqBody )
@@ -53,7 +54,7 @@ data User = User {
     skype_id :: Maybe T.Text,
     phone_vk :: Maybe T.Text,
     phone :: Maybe T.Text,
-    email_id :: [ T.Text ]
+    email_id :: Maybe T.Text
 } deriving Generic
 instance FromJSON User
 instance ToJSON User
@@ -81,12 +82,36 @@ newtype SiteAdded = SiteAdded {
 instance FromJSON SiteAdded
 instance ToJSON SiteAdded
 
+-- type for date limit 
+data DateLimit = DateLimit {
+    min :: Int,
+    max :: Int
+} deriving Generic
+instance FromJSON DateLimit
+instance ToJSON DateLimit
+
+-- type for orderby
+newtype OrderBy = OrderBy {
+    s_date :: T.Text
+} deriving Generic
+instance FromJSON OrderBy
+instance ToJson OrderBy
+
 --------------- api types
 -- api type
 type Api = (
     "userget" :>
-    Capture "skip" Int :>
-    Capture "take" Int :>
-    Capture "orderby" Bool :>
-    Capture "date" T.Text :>
-    Header "Auth-token" T.Text )
+        QueryParam "skip" Int :>
+        QueryParam "take" Int :>
+        QueryParam "orderby" OrderBy :>
+        QueryParam "date" DateLimit :>
+        Header "Auth-token" T.Text :>
+        Post '[ JSON ] [ User ] ) :<|> ( 
+    "connection" :>
+        QueryParam "domain" T.Text :>
+        Post '[ JSON ] SiteAdded ) :<|> ( 
+    "connectionlist" :>
+        Post '[ JSON ] [ Site ] ) :<|> (
+    "connectionremove" :>
+        QueryParam "id" Int :>
+        Post '[ JSON ] Success )
