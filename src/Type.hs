@@ -3,7 +3,7 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE FlexibleInstances #-}
 {-# LANGUAGE DuplicateRecordFields #-}
-module Type () where
+module Type where
 
 ----------------------------imports-------------------------------
 -- foreign imports
@@ -22,6 +22,7 @@ import GHC.Generics ( Generic )
 import Data.Aeson ( 
     FromJSON,
     ToJSON )
+import Web.Internal.HttpApiData ( FromHttpApiData )
 
 -----------------------------types--------------------------------
 ------------- json types
@@ -89,17 +90,19 @@ data DateLimit = DateLimit {
 } deriving Generic
 instance FromJSON DateLimit
 instance ToJSON DateLimit
+instance FromHttpApiData DateLimit
 
 -- type for orderby
 newtype OrderBy = OrderBy {
     s_date :: T.Text
 } deriving Generic
 instance FromJSON OrderBy
-instance ToJson OrderBy
+instance ToJSON OrderBy
+instance FromHttpApiData OrderBy
 
 --------------- api types
 -- api type
-type Api = (
+type BaseApi = (
     "userget" :>
         QueryParam "skip" Int :>
         QueryParam "take" Int :>
@@ -109,9 +112,12 @@ type Api = (
         Post '[ JSON ] [ User ] ) :<|> ( 
     "connection" :>
         QueryParam "domain" T.Text :>
+        Header "Auth-token" T.Text :>
         Post '[ JSON ] SiteAdded ) :<|> ( 
     "connectionlist" :>
+        Header "Auth-token" T.Text :>
         Post '[ JSON ] [ Site ] ) :<|> (
     "connectionremove" :>
         QueryParam "id" Int :>
+        Header "Auth-token" T.Text :>
         Post '[ JSON ] Success )

@@ -28,6 +28,7 @@ dependencies:
 - http-conduit
 - bytestring
 - unix-time
+- http-api-data
 
 ghc-options:
 - -Wall

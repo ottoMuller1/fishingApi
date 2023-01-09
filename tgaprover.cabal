@@ -25,6 +25,8 @@ source-repository head
 
 library
   exposed-modules:
+      App
+      Route
       Type
   other-modules:
       Paths_tgaprover
@@ -35,6 +37,7 @@ library
       aeson
     , base >=4.7 && <5
     , bytestring
+    , http-api-data
     , http-conduit
     , servant-server
     , text
@@ -53,6 +56,7 @@ executable tgaprover-exe
       aeson
     , base >=4.7 && <5
     , bytestring
+    , http-api-data
     , http-conduit
     , servant-server
     , text
@@ -73,6 +77,7 @@ test-suite tgaprover-test
       aeson
     , base >=4.7 && <5
     , bytestring
+    , http-api-data
     , http-conduit
     , servant-server
     , text
